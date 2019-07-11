@@ -1,3 +1,4 @@
+#include "csvloader.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -12,11 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     createActions();
     createMenus();
 
+    initWorkerThread();
+
     setWindowTitle(tr("Линейная апроксимация методом наименьших квадратов"));
 }
 
 MainWindow::~MainWindow()
 {
+    workerThread.quit();
+    workerThread.wait();
+
     delete ui;
 }
 
@@ -42,11 +48,23 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAct);
 }
 
+void MainWindow::initWorkerThread()
+{
+    CSVLoader *csvLoader = new CSVLoader();
+    csvLoader->moveToThread(&workerThread);
+    connect(&workerThread, &QThread::finished, csvLoader, &QObject::deleteLater);
+    connect(this, &MainWindow::loadCSV, csvLoader, &CSVLoader::loadData);
+    workerThread.start();
+}
+
 void MainWindow::openCSV()
 {
- QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
- QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Открыть файл csv"), desktopPath, tr("Файл csv (*.csv)"));
+    QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    QString filePath = QFileDialog::getOpenFileName(this,
+                                                    tr("Открыть файл csv"), desktopPath, tr("Файл csv (*.csv)"));
+    if (!filePath.isEmpty())
+       emit loadCSV(filePath,',');
+
 }
 
 void MainWindow::saveCSV()

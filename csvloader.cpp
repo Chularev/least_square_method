@@ -3,13 +3,12 @@
 #include <QFile>
 #include <QTextStream>
 
-CSVLoader::CSVLoader(const QString &path, const QChar &separator)
-    : path(path), separator(separator)
+CSVLoader::CSVLoader()
 {
 
 }
 
-void CSVLoader::loadData()
+void CSVLoader::loadData(const QString &path, const QChar &separator)
 {
     QStringList row;
     QFile f1(path);

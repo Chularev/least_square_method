@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        csvloader.cpp \
         main.cpp \
         mainwindow.cpp \
         qcustomplot.cpp
 
 HEADERS += \
+        csvloader.h \
         mainwindow.h \
         qcustomplot.h
 
