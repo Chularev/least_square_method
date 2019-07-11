@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QStandardPaths>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -42,6 +44,9 @@ void MainWindow::createMenus()
 
 void MainWindow::openCSV()
 {
+ QString desktopPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+ QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Открыть файл csv"), desktopPath, tr("Файл csv (*.csv)"));
 }
 
 void MainWindow::saveCSV()
