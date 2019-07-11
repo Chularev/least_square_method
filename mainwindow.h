@@ -16,7 +16,18 @@ public:
     ~MainWindow();
 
 private:
+    void createActions();
+    void createMenus();
+
     Ui::MainWindow *ui;
+
+    QMenu *fileMenu;
+    QAction *openAct;
+    QAction *saveAct;
+
+private slots:
+    void openCSV();
+    void saveCSV();
 };
 
 #endif // MAINWINDOW_H
