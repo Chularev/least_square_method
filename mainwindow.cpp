@@ -78,10 +78,10 @@ void MainWindow::statusChanged(Status status)
     switch (status)
     {
     case Status::START_LOAD_DATA:
-        ui->statusBar->showMessage(tr("Выполняется загрузка данных"));
+        ui->myStatusBar->setText(tr("Выполняется загрузка данных"));
         break;
     case Status::FINISH_LOAD_DATA:
-        ui->statusBar->showMessage(tr("Загрузка данных завершена"));
+        ui->myStatusBar->setText(tr("Загрузка данных завершена"));
         break;
     }
 
