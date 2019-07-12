@@ -26,12 +26,14 @@ CONFIG += c++11
 
 SOURCES += \
         csvloader.cpp \
+        graph.cpp \
         main.cpp \
         mainwindow.cpp \
         qcustomplot.cpp
 
 HEADERS += \
         csvloader.h \
+        graph.h \
         mainwindow.h \
         qcustomplot.h \
         status.h
