@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "status.h"
+
 #include <QMainWindow>
 #include <QThread>
 
@@ -33,6 +35,7 @@ private:
 private slots:
     void openCSV();
     void saveCSV();
+    void statusChanged(Status status);
 
 signals:
     void loadCSV(const QString &filePath, const QChar &separator);

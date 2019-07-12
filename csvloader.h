@@ -1,6 +1,8 @@
 #ifndef CSVREADER_H
 #define CSVREADER_H
 
+#include "status.h"
+
 #include <QObject>
 
 class CSVLoader : public QObject
@@ -9,10 +11,12 @@ class CSVLoader : public QObject
 public:
     explicit CSVLoader();
 
-signals:
-
 public slots:
     void loadData(const QString &path, const QChar &separator);
+
+signals:
+    void statusChanged(Status status);
+
 private:
     QString path;
     QChar separator;

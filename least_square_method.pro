@@ -33,7 +33,8 @@ SOURCES += \
 HEADERS += \
         csvloader.h \
         mainwindow.h \
-        qcustomplot.h
+        qcustomplot.h \
+        status.h
 
 FORMS += \
         mainwindow.ui
