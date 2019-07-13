@@ -54,7 +54,7 @@ void MainWindow::initWorkerThread()
     csvLoader->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, csvLoader, &QObject::deleteLater);
     connect(this, &MainWindow::loadCSV, csvLoader, &CSVLoader::loadData);
-    connect(csvLoader,&CSVLoader::statusChanged,this, &MainWindow::statusChanged, Qt::DirectConnection);
+    connect(csvLoader,&CSVLoader::statusChanged,this, &MainWindow::statusChanged, Qt::BlockingQueuedConnection);
 
     workerThread.start();
 }
@@ -73,7 +73,7 @@ void MainWindow::saveCSV()
 {
 }
 
-void MainWindow::statusChanged(Status status)
+void MainWindow::statusChanged(Status status, QString message)
 {
     switch (status)
     {
@@ -82,6 +82,11 @@ void MainWindow::statusChanged(Status status)
         break;
     case Status::FINISH_LOAD_DATA:
         ui->myStatusBar->setText(tr("Загрузка данных завершена"));
+        break;
+    case Status::OPEN_FILE_ERROR:
+        QMessageBox::warning(this, tr("Ошибка при открытие документа"),
+                            tr("При открытие документа произошла ошибка.\n")
+                             + message, QMessageBox::Ok);
         break;
     }
 

@@ -35,7 +35,7 @@ private:
 private slots:
     void openCSV();
     void saveCSV();
-    void statusChanged(Status status);
+    void statusChanged(Status status, QString message);
 
 signals:
     void loadCSV(const QString &filePath, const QChar &separator);

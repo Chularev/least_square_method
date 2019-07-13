@@ -15,7 +15,8 @@ public slots:
     void loadData(const QString &path, const QChar &separator);
 
 signals:
-    void statusChanged(Status status);
+    void statusChanged(Status status, QString message = "");
+    void initPlot();
 
 private:
     QString path;
