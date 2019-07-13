@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "graph.h"
 #include "status.h"
 
 #include <QMainWindow>
@@ -36,6 +37,7 @@ private slots:
     void openCSV();
     void saveCSV();
     void statusChanged(Status status, QString message);
+    void initPlot(const QList<Graph> &graphs);
 
 signals:
     void loadCSV(const QString &filePath, const QChar &separator);

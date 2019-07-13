@@ -2,6 +2,7 @@
 #define CSVREADER_H
 
 #include "status.h"
+#include "graph.h"
 
 #include <QObject>
 
@@ -16,12 +17,13 @@ public slots:
 
 signals:
     void statusChanged(Status status, QString message = "");
-    void initPlot();
+    void initPlot(const QList<Graph> &graphs);
 
 private:
+    void parseHeader(const QStringList &header);
+
     QString path;
     QChar separator;
-
 };
 
 #endif // CSVREADER_H

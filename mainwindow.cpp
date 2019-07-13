@@ -55,6 +55,7 @@ void MainWindow::initWorkerThread()
     connect(&workerThread, &QThread::finished, csvLoader, &QObject::deleteLater);
     connect(this, &MainWindow::loadCSV, csvLoader, &CSVLoader::loadData);
     connect(csvLoader,&CSVLoader::statusChanged,this, &MainWindow::statusChanged, Qt::BlockingQueuedConnection);
+    connect(csvLoader,&CSVLoader::initPlot,this,&MainWindow::initPlot, Qt::BlockingQueuedConnection);
 
     workerThread.start();
 }
@@ -91,3 +92,17 @@ void MainWindow::statusChanged(Status status, QString message)
     }
 
 }
+ void MainWindow::initPlot(const QList<Graph> &graphs)
+ {
+     ui->plot->clearGraphs();
+     for (int i = 0; i < graphs.count(); i++)
+     {
+         const Graph &graph = graphs.at(i);
+         ui->plot->addGraph();
+         ui->plot->graph(i)->setPen(graph.getColor());
+         ui->plot->graph(i)->setLineStyle(QCPGraph::lsNone);
+         ui->plot->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+         ui->plot->graph(i)->setName(graph.getName());
+     }
+     ui->plot->replot();
+ }
