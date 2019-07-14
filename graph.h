@@ -19,6 +19,9 @@ public:
     QVector<double> getX() const;
     void setX(const QVector<double> &value);
 
+    QVector<double> getY() const;
+    void setY(const QVector<double> &value);
+
 private:
     QColor generateColor();
 

@@ -31,6 +31,16 @@ QColor Graph::generateColor()
     return color;
 }
 
+QVector<double> Graph::getY() const
+{
+    return y;
+}
+
+void Graph::setY(const QVector<double> &value)
+{
+    y = value;
+}
+
 QVector<double> Graph::getX() const
 {
     return x;
