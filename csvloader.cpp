@@ -65,7 +65,7 @@ void CSVLoader::parseHeader(const QStringList &header)
 void CSVLoader::loadPortion(const QChar &separator)
 {
     int portionSize = 250;
-    QList<double> y;
+    QVector<QList<double>> yVector(headerSize - 1);
     QVector<QList<double>> xVector(headerSize - 1);
 
     for (int i = 0; i < portionSize; i++)
@@ -75,24 +75,22 @@ void CSVLoader::loadPortion(const QChar &separator)
 
         QString line = input.readLine();
         QStringList row = line.split(separator);
-        y.append(row[0].toDouble());
         for (int j = 1; j < row.count(); ++j) {
             xVector[j - 1].append(row[j].toDouble());
+            yVector[j - 1].append(row[j].toDouble());
         }
     }
 
-    doPortionEmit(y,xVector);
+   doPortionEmit(yVector,xVector);
 }
 
-void CSVLoader::doPortionEmit(const QList<double> &y, const QVector<QList<double>> &xVector)
+void CSVLoader::doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector)
 {
     QList<Graph> graphs;
-    for (QList<double> x : xVector) {
+    for (int i = 0; i < xVector.size(); i++) {
         Graph graph("");
-        qDebug() << "X size = " << x.size();
-       qDebug() << "Y size = " << y.size();
-        graph.setX(x.toVector());
-        graph.setY(y.toVector());
+        graph.setX(xVector[i].toVector());
+        graph.setY(yVector[i].toVector());
         graphs.append(graph);
     }
 
