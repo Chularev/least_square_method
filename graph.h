@@ -22,6 +22,12 @@ public:
     QVector<double> getY() const;
     void setY(const QVector<double> &value);
 
+    double getMinX() const;
+    double getMinY() const;
+
+    double getMaxX() const;
+    double getMaxY() const;
+
 private:
     QColor generateColor();
 

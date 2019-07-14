@@ -55,3 +55,24 @@ QString Graph::getName() const
 {
     return name;
 }
+
+
+double Graph::getMinX() const
+{
+    return *std::min_element(x.constBegin(), x.constEnd());
+}
+
+double Graph::getMinY() const
+{
+  return *std::min_element(y.constBegin(), y.constEnd());
+}
+
+double Graph::getMaxX() const
+{
+    return *std::max_element(x.constBegin(), x.constEnd());
+}
+
+double Graph::getMaxY() const
+{
+   return *std::max_element(y.constBegin(), y.constEnd());
+}
