@@ -5,6 +5,7 @@
 #include "graph.h"
 
 #include <QObject>
+#include <QTextStream>
 
 class CSVLoader : public QObject
 {
@@ -18,12 +19,16 @@ public slots:
 signals:
     void statusChanged(Status status, QString message = "");
     void initPlot(const QList<Graph> &graphs);
+    void portionLoaded(const QList<Graph> &graphs);
 
 private:
     void parseHeader(const QStringList &header);
+    bool init(const QChar &separator);
+    void loadPortion(const QChar &separator);
+    void doPortionEmit(const QList<double> &y, const QVector<QList<double>> &xVector);
 
-    QString path;
-    QChar separator;
+    int headerSize;
+    QTextStream input;
 };
 
 #endif // CSVREADER_H
