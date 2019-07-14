@@ -38,6 +38,7 @@ private slots:
     void saveCSV();
     void statusChanged(Status status, QString message);
     void initPlot(const QList<Graph> &graphs);
+    void drawPortion(const QList<Graph> &graphs);
 
 signals:
     void loadCSV(const QString &filePath, const QChar &separator);

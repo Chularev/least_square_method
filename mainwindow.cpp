@@ -56,6 +56,7 @@ void MainWindow::initWorkerThread()
     connect(this, &MainWindow::loadCSV, csvLoader, &CSVLoader::loadData);
     connect(csvLoader,&CSVLoader::statusChanged,this, &MainWindow::statusChanged, Qt::BlockingQueuedConnection);
     connect(csvLoader,&CSVLoader::initPlot,this,&MainWindow::initPlot, Qt::BlockingQueuedConnection);
+    connect(csvLoader,&CSVLoader::portionLoaded,this,&MainWindow::drawPortion, Qt::BlockingQueuedConnection);
 
     workerThread.start();
 }
@@ -66,7 +67,7 @@ void MainWindow::openCSV()
     QString filePath = QFileDialog::getOpenFileName(this,
                                                     tr("Открыть файл csv"), desktopPath, tr("Файл csv (*.csv)"));
     if (!filePath.isEmpty())
-       emit loadCSV(filePath,',');
+        emit loadCSV(filePath,',');
 
 }
 
@@ -86,23 +87,33 @@ void MainWindow::statusChanged(Status status, QString message)
         break;
     case Status::OPEN_FILE_ERROR:
         QMessageBox::warning(this, tr("Ошибка при открытие документа"),
-                            tr("При открытие документа произошла ошибка.\n")
+                             tr("При открытие документа произошла ошибка.\n")
                              + message, QMessageBox::Ok);
         break;
     }
 
 }
- void MainWindow::initPlot(const QList<Graph> &graphs)
- {
-     ui->plot->clearGraphs();
-     for (int i = 0; i < graphs.count(); i++)
-     {
-         const Graph &graph = graphs.at(i);
-         ui->plot->addGraph();
-         ui->plot->graph(i)->setPen(graph.getColor());
-         ui->plot->graph(i)->setLineStyle(QCPGraph::lsNone);
-         ui->plot->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-         ui->plot->graph(i)->setName(graph.getName());
-     }
-     ui->plot->replot();
- }
+void MainWindow::initPlot(const QList<Graph> &graphs)
+{
+    ui->plot->clearGraphs();
+    for (int i = 0; i < graphs.count(); i++)
+    {
+        const Graph graph = graphs.at(i);
+        ui->plot->addGraph();
+        ui->plot->graph(i)->setPen(graph.getColor());
+        ui->plot->graph(i)->setLineStyle(QCPGraph::lsNone);
+        ui->plot->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+        ui->plot->graph(i)->setName(graph.getName());
+    }
+    ui->plot->replot();
+}
+
+void MainWindow::drawPortion(const QList<Graph> &graphs)
+{
+    for (int i = 0; i < graphs.count(); i++)
+    {
+        const Graph graph = graphs.at(i);
+        ui->plot->graph(i)->addData(graph.getX(),graph.getY());
+    }
+    ui->plot->replot();
+}
