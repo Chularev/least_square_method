@@ -25,6 +25,8 @@ private:
 
     void initWorkerThread();
 
+    void updateRange(const QList<Graph> &graphs);
+
     Ui::MainWindow *ui;
 
     QMenu *fileMenu;

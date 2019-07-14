@@ -105,6 +105,9 @@ void MainWindow::initPlot(const QList<Graph> &graphs)
         ui->plot->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
         ui->plot->graph(i)->setName(graph.getName());
     }
+    ui->plot->xAxis->setRange(0,0);
+    ui->plot->yAxis->setRange(0,0);
+    ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     ui->plot->replot();
 }
 
@@ -115,5 +118,25 @@ void MainWindow::drawPortion(const QList<Graph> &graphs)
         const Graph graph = graphs.at(i);
         ui->plot->graph(i)->addData(graph.getX(),graph.getY());
     }
+    updateRange(graphs);
     ui->plot->replot();
+}
+
+void MainWindow::updateRange(const QList<Graph> &graphs)
+{
+    double minX = ui->plot->xAxis->range().minRange;
+    double maxX = ui->plot->xAxis->range().maxRange;
+
+    double minY = ui->plot->yAxis->range().minRange;
+    double maxY = ui->plot->yAxis->range().maxRange;
+
+    for (const Graph &graph : graphs) {
+        minX = qMin(minX,graph.getMinX());
+        maxX = qMax(maxX,graph.getMaxX());
+
+        minY = qMin(minY,graph.getMinY());
+        maxY = qMax(maxY,graph.getMaxY());
+    }
+    ui->plot->xAxis->setRange(minX,maxX);
+    ui->plot->yAxis->setRange(minY,maxY);
 }

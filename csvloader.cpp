@@ -64,7 +64,7 @@ void CSVLoader::parseHeader(const QStringList &header)
 
 void CSVLoader::loadPortion(const QChar &separator)
 {
-    int portionSize = 250;
+    int portionSize = 100000;
     QVector<QList<double>> yVector(headerSize - 1);
     QVector<QList<double>> xVector(headerSize - 1);
 
