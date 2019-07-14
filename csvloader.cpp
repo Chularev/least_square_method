@@ -4,6 +4,8 @@
 #include <QTextStream>
 #include <QDebug>
 
+static const int PORTION_SIZE = 10000;
+
 CSVLoader::CSVLoader()
     : headerSize(0)
 {
@@ -64,11 +66,10 @@ void CSVLoader::parseHeader(const QStringList &header)
 
 void CSVLoader::loadPortion(const QChar &separator)
 {
-    int portionSize = 100000;
     QVector<QList<double>> yVector(headerSize - 1);
     QVector<QList<double>> xVector(headerSize - 1);
 
-    for (int i = 0; i < portionSize; i++)
+    for (int i = 0; i < PORTION_SIZE; i++)
     {
         if (input.atEnd())
             break;
