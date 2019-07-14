@@ -84,7 +84,7 @@ void CSVLoader::loadPortion(const QChar &separator)
    doPortionEmit(yVector,xVector);
 }
 
-void CSVLoader::doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector)
+void CSVLoader::doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector) const
 {
     QList<Graph> graphs;
     for (int i = 0; i < xVector.size(); i++) {

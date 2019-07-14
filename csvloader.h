@@ -17,15 +17,15 @@ public slots:
     void loadData(const QString &path, const QChar &separator);
 
 signals:
-    void statusChanged(Status status, QString message = "");
-    void initPlot(const QList<Graph> &graphs);
-    void portionLoaded(const QList<Graph> &graphs);
+    void statusChanged(Status status, QString message = "") const;
+    void initPlot(const QList<Graph> &graphs) const;
+    void portionLoaded(const QList<Graph> &graphs) const;
 
 private:
     void parseHeader(const QStringList &header);
     bool init(const QChar &separator);
     void loadPortion(const QChar &separator);
-    void doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector);
+    void doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector) const;
 
     int headerSize;
     QTextStream input;
