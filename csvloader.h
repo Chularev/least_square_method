@@ -25,7 +25,7 @@ private:
     void parseHeader(const QStringList &header);
     bool init(const QChar &separator);
     void loadPortion(const QChar &separator);
-    void doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector) const;
+    void doPortionEmit(const QVector<QList<double>> &xVector, const QVector<QList<double>> &yVector) const;
 
     int headerSize;
     QTextStream input;

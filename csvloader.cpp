@@ -76,16 +76,25 @@ void CSVLoader::loadPortion(const QChar &separator)
 
         QString line = input.readLine();
         QStringList row = line.split(separator);
-        for (int j = 1; j < row.count(); ++j) {
-            xVector[j - 1].append(row[j].toDouble());
-            yVector[j - 1].append(row[j].toDouble());
+
+        bool test;
+        double y = row[0].toDouble(&test);
+        if (!test)
+            continue;
+        for (int j = 1; j < row.count(); ++j)
+        {
+            double x = row[j].toDouble(&test);
+            if (!test)
+                continue;
+            yVector[j - 1].append(y);
+            xVector[j - 1].append(x);
         }
     }
 
-   doPortionEmit(yVector,xVector);
+   doPortionEmit(xVector,yVector);
 }
 
-void CSVLoader::doPortionEmit(const QVector<QList<double>> &yVector, const QVector<QList<double>> &xVector) const
+void CSVLoader::doPortionEmit(const QVector<QList<double>> &xVector,const QVector<QList<double>> &yVector) const
 {
     QList<Graph> graphs;
     for (int i = 0; i < xVector.size(); i++) {
