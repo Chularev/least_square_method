@@ -4,7 +4,7 @@
 #include <QTextStream>
 #include <QDebug>
 
-static const int PORTION_SIZE = 10000;
+static const int PORTION_SIZE = 50000;
 
 CSVLoader::CSVLoader()
     : headerSize(0)
