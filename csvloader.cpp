@@ -33,7 +33,7 @@ void CSVLoader::loadData(const QString &path, const QChar &separator)
     while (!input.atEnd()){
         QString line = input.readLine();
         row = line.split(separator);
-        qDebug() << row;
+     //qDebug() << row;
     }
     file.close();
 
@@ -44,8 +44,7 @@ void CSVLoader::parseHeader(const QStringList &header)
 {
     QList<Graph> graphs;
 
-    for (int i = 1; i < graphs.count(); i++)
-        if (i > 0)
+    for (int i = 1; i < header.count(); i++)
             graphs.append(Graph(header.at(i)));
 
     emit initPlot(graphs);
