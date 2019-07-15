@@ -76,6 +76,8 @@ void CSVLoader::loadPortion(const QChar &separator)
 
         QString line = input.readLine();
         QStringList row = line.split(separator);
+        if (xVector.size() != row.size() -1) // Because this test file has empty column
+            xVector.resize(row.size() -1);
 
         bool test;
         double y = row[0].toDouble(&test);
