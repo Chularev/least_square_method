@@ -29,12 +29,14 @@ SOURCES += \
         graph.cpp \
         main.cpp \
         mainwindow.cpp \
+        plotdecorator.cpp \
         qcustomplot.cpp
 
 HEADERS += \
         csvloader.h \
         graph.h \
         mainwindow.h \
+        plotdecorator.h \
         qcustomplot.h \
         status.h
 
