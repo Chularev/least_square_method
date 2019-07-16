@@ -14,7 +14,7 @@ void PlotDecorator::onXRangeChanged(const QCPRange &range)
 {
     QCPRange boundedRange = range;
 
-    if(boundedRange.lower < minX)   // restrict max zoom in
+    if(boundedRange.lower < minX)
         boundedRange.lower = minX;
 
     if (boundedRange.upper > maxX)
