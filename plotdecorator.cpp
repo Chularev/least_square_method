@@ -3,8 +3,10 @@
 PlotDecorator::PlotDecorator(QCustomPlot *plot,QObject *parent)
     : QObject(parent), wasInitiated(false), plot(plot)
 {
-    connect(plot->xAxis,    SIGNAL(rangeChanged(QCPRange)), this,   SLOT(onXRangeChanged(QCPRange)));
-    connect(plot->yAxis,    SIGNAL(rangeChanged(QCPRange)), this,   SLOT(onYRangeChanged(QCPRange)));
+    connect(plot->xAxis, QOverload<const QCPRange &>::of(&QCPAxis::rangeChanged),
+            this, &PlotDecorator::onXRangeChanged);
+    connect(plot->yAxis, QOverload<const QCPRange &>::of(&QCPAxis::rangeChanged),
+            this,&PlotDecorator::onYRangeChanged);
 
 }
 
