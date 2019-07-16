@@ -76,17 +76,15 @@ void CSVLoader::loadPortion(const QChar &separator)
 
         QString line = input.readLine();
         QStringList row = line.split(separator);
-        if (xVector.size() != row.size() -1) // Because this test file has empty column
-            xVector.resize(row.size() -1);
 
-        bool test;
-        double y = row[0].toDouble(&test);
-        if (!test)
+        double y;
+        if (!strToDouble(row[0],&y))
             continue;
-        for (int j = 1; j < row.count(); ++j)
+
+        for (int j = 1; j < row.count(); j++)
         {
-            double x = row[j].toDouble(&test);
-            if (!test)
+            double x;
+            if (!strToDouble(row[j],&x))
                 continue;
             yVector[j - 1].append(y);
             xVector[j - 1].append(x);
@@ -96,10 +94,20 @@ void CSVLoader::loadPortion(const QChar &separator)
    doPortionEmit(xVector,yVector);
 }
 
+bool CSVLoader::strToDouble(const QString &str, double *result) const
+{
+
+    bool test;
+    *result = str.toDouble(&test);
+    return test;
+}
+
 void CSVLoader::doPortionEmit(const QVector<QList<double>> &xVector,const QVector<QList<double>> &yVector) const
 {
     QList<Graph> graphs;
     for (int i = 0; i < xVector.size(); i++) {
+        if (xVector[i].size() == 0)
+            continue;
         Graph graph("");
         graph.setX(xVector[i].toVector());
         graph.setY(yVector[i].toVector());

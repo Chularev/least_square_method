@@ -26,6 +26,7 @@ private:
     bool init(const QChar &separator);
     void loadPortion(const QChar &separator);
     void doPortionEmit(const QVector<QList<double>> &xVector, const QVector<QList<double>> &yVector) const;
+    bool strToDouble(const QString &str, double *result) const;
 
     int headerSize;
     QTextStream input;
