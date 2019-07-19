@@ -21,6 +21,11 @@ private slots:
     void onXRangeChanged(const QCPRange &range);
     void onYRangeChanged(const QCPRange &range);
 
+    void mouseMoveSignal(QMouseEvent *event);
+    void mousePressSignal(QMouseEvent *event);
+    void mouseReleaseSignal(QMouseEvent *event);
+    void beforeReplot();
+
 private:
 
     void updateRange(const QList<Graph> &graphs);
@@ -30,6 +35,8 @@ private:
     bool wasInitiated;
     QCustomPlot *plot;
 
+    bool draggingLegend;
+    QPointF dragLegendOrigin;
 
     double minX;
     double maxX;
