@@ -91,32 +91,38 @@ void PlotDecorator::init(const Graph &graph)
 
 void PlotDecorator::mouseMoveSignal(QMouseEvent *event)
 {
-    if (draggingLegend)
-    {
-        QRectF rect = plot->axisRect()->insetLayout()->insetRect(0);
-        // since insetRect is in axisRect coordinates (0..1), we transform the mouse position:
+    if (!draggingLegend)
+        return;
 
-        QPointF mousePoint((event->pos().x()- plot->axisRect()->left())/(double)plot->axisRect()->width(),
-                           (event->pos().y()- plot->axisRect()->top())/(double)plot->axisRect()->height());
-        rect.moveTopLeft(mousePoint-dragLegendOrigin);
-        plot->axisRect()->insetLayout()->setInsetRect(0, rect);
-        plot->replot();
-    }
+    QRectF rect = plot->axisRect()->insetLayout()->insetRect(0);
+
+    double width = static_cast<double>(plot->axisRect()->width());
+    double height = static_cast<double>(plot->axisRect()->height());
+
+    QPointF mousePoint((event->pos().x() - plot->axisRect()->left())/width,
+                       (event->pos().y() - plot->axisRect()->top())/height);
+    rect.moveTopLeft(mousePoint-dragLegendOrigin);
+    plot->axisRect()->insetLayout()->setInsetRect(0, rect);
+    plot->replot();
 
 }
 
 void PlotDecorator::mousePressSignal(QMouseEvent *event)
 {
 
-    if (plot->legend->selectTest(event->pos(), false) > 0)
-    {
-        plot->yAxis->axisRect()->setRangeDrag(0);
-        draggingLegend = true;
-        // since insetRect is in axisRect coordinates (0..1), we transform the mouse position:
-        QPointF mousePoint((event->pos().x() - plot->axisRect()->left())/(double) plot->axisRect()->width(),
-                           (event->pos().y() - plot->axisRect()->top())/(double)plot->axisRect()->height());
-        dragLegendOrigin = mousePoint- plot->axisRect()->insetLayout()->insetRect(0).topLeft();
-    }
+    if (plot->legend->selectTest(event->pos(), false) <= 0)
+        return;
+
+    plot->yAxis->axisRect()->setRangeDrag(0);
+    draggingLegend = true;
+
+    double width = static_cast<double>(plot->axisRect()->width());
+    double height = static_cast<double>(plot->axisRect()->height());
+
+    QPointF mousePoint((event->pos().x() - plot->axisRect()->left()) / width,
+                       (event->pos().y() - plot->axisRect()->top()) / height);
+    dragLegendOrigin = mousePoint- plot->axisRect()->insetLayout()->insetRect(0).topLeft();
+
 }
 
 void PlotDecorator::mouseReleaseSignal(QMouseEvent *event)
@@ -130,10 +136,6 @@ void PlotDecorator::mouseReleaseSignal(QMouseEvent *event)
 
 void PlotDecorator::beforeReplot()
 {
-    // this is to prevent the legend from stretching if the plot is stretched.
-    // Since we've set the inset placement to be ipFree, the width/height of the legend
-    // is also defined in axisRect coordinates (0..1) and thus would stretch.
-    // This is due to change in a future release (probably QCP 2.0) since it's basically a design mistake.
-    plot->legend->setMaximumSize(plot->legend->minimumOuterSizeHint());
+   plot->legend->setMaximumSize(plot->legend->minimumOuterSizeHint());
 }
 
