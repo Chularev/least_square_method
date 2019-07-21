@@ -27,6 +27,7 @@ private slots:
     void mousePressSignal(QMouseEvent *event);
     void mouseReleaseSignal(QMouseEvent *event);
     void beforeReplot();
+    void selectionChanged();
 
 private:
 

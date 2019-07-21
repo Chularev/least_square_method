@@ -15,6 +15,8 @@ PlotDecorator::PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *paren
     connect(plot, &QCustomPlot::mouseRelease, this, &PlotDecorator::mouseReleaseSignal);
     connect(plot, &QCustomPlot::beforeReplot, this, &PlotDecorator::beforeReplot);
 
+    connect(plot, &QCustomPlot::selectionChangedByUser, this, &PlotDecorator::selectionChanged);
+
 }
 
 void PlotDecorator::onXRangeChanged(const QCPRange &range)
@@ -146,6 +148,19 @@ void PlotDecorator::mouseReleaseSignal(QMouseEvent *event)
 
 void PlotDecorator::beforeReplot()
 {
-   plot->legend->setMaximumSize(plot->legend->minimumOuterSizeHint());
+    plot->legend->setMaximumSize(plot->legend->minimumOuterSizeHint());
 }
 
+void PlotDecorator::selectionChanged()
+{
+    for (int i=0; i < plot->graphCount(); ++i)
+    {
+        QCPGraph *graph = plot->graph(i);
+        QCPPlottableLegendItem *item = plot->legend->itemWithPlottable(graph);
+        if (item->selected() || graph->selected())
+        {
+            item->setSelected(true);
+            graph->setSelection(QCPDataSelection(graph->data()->dataRange()));
+        }
+    }
+}
