@@ -1,8 +1,8 @@
 #include "plotdecorator.h"
 
-PlotDecorator::PlotDecorator(QCustomPlot *plot,QObject *parent)
+PlotDecorator::PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *parent)
     : QObject(parent), wasInitiated(false), plot(plot),
-      draggingLegend(false)
+      legendFont(legendFont), draggingLegend(false)
 {
     connect(plot->xAxis, QOverload<const QCPRange &>::of(&QCPAxis::rangeChanged),
             this, &PlotDecorator::onXRangeChanged);
@@ -87,6 +87,16 @@ void PlotDecorator::init(const Graph &graph)
 
     minY = graph.getMinY();
     maxY = graph.getMaxY();
+}
+
+void PlotDecorator::intLegend()
+{
+    plot->legend->setFont(legendFont);
+    plot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+
+    plot->legend->setVisible(true);
+    plot->axisRect()->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
+    plot->axisRect()->insetLayout()->setInsetRect(0, QRectF(0.8, 0, 1, 1));
 }
 
 void PlotDecorator::mouseMoveSignal(QMouseEvent *event)

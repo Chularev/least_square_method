@@ -10,7 +10,9 @@ class PlotDecorator : public QObject
 {
     Q_OBJECT
 public:
-    explicit PlotDecorator(QCustomPlot *plot, QObject *parent = nullptr);
+    explicit PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *parent = nullptr);
+
+    void intLegend();
 
 signals:
 
@@ -35,6 +37,7 @@ private:
     bool wasInitiated;
     QCustomPlot *plot;
 
+    QFont legendFont;
     bool draggingLegend;
     QPointF dragLegendOrigin;
 
