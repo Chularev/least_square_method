@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        approximationdialog.cpp \
         csvloader.cpp \
         graph.cpp \
         main.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
         qcustomplot.cpp
 
 HEADERS += \
+        approximationdialog.h \
         csvloader.h \
         graph.h \
         mainwindow.h \
@@ -41,6 +43,7 @@ HEADERS += \
         status.h
 
 FORMS += \
+        approximationdialog.ui \
         mainwindow.ui
 
 # Default rules for deployment.
