@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "graph.h"
+#include "plotdecorator.h"
 #include "status.h"
 
 #include <QMainWindow>
@@ -25,8 +26,6 @@ private:
 
     void initWorkerThread();
 
-    void updateRange(const QList<Graph> &graphs);
-
     Ui::MainWindow *ui;
 
     QMenu *fileMenu;
@@ -35,12 +34,12 @@ private:
 
     QThread workerThread;
 
+    PlotDecorator *plotDecorator;
+
 private slots:
     void openCSV();
     void saveCSV();
     void statusChanged(Status status, QString message);
-    void initPlot(const QList<Graph> &graphs);
-    void drawPortion(const QList<Graph> &graphs);
 
 signals:
     void loadCSV(const QString &filePath, const QChar &separator);
