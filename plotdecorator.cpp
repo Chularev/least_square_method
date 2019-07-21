@@ -45,6 +45,38 @@ void PlotDecorator::onYRangeChanged(const QCPRange &range)
     plot->yAxis->setRange(boundedRange);
 }
 
+void PlotDecorator::initPlot(const QList<Graph> &graphs)
+{
+    plot->clearGraphs();
+    for (int i = 0; i < graphs.count(); i++)
+    {
+        const Graph graph = graphs.at(i);
+        plot->addGraph();
+        plot->graph(i)->setPen(graph.getColor());
+        plot->graph(i)->setLineStyle(QCPGraph::lsNone);
+        plot->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+        plot->graph(i)->setName(graph.getName());
+    }
+    plot->xAxis->setRange(0,1);
+    plot->yAxis->setRange(0,1);
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectLegend);
+
+    intLegend();
+
+    plot->replot();
+}
+
+void PlotDecorator::intLegend()
+{
+    plot->legend->setFont(legendFont);
+    plot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+
+    plot->legend->setVisible(true);
+    plot->axisRect()->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
+    plot->axisRect()->insetLayout()->setInsetRect(0, QRectF(0.8, 0, 1, 1));
+}
+
+
 void PlotDecorator::drawPortion(const QList<Graph> &graphs)
 {
     qApp->processEvents();
@@ -89,16 +121,6 @@ void PlotDecorator::init(const Graph &graph)
 
     minY = graph.getMinY();
     maxY = graph.getMaxY();
-}
-
-void PlotDecorator::intLegend()
-{
-    plot->legend->setFont(legendFont);
-    plot->legend->setBrush(QBrush(QColor(255,255,255,230)));
-
-    plot->legend->setVisible(true);
-    plot->axisRect()->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
-    plot->axisRect()->insetLayout()->setInsetRect(0, QRectF(0.8, 0, 1, 1));
 }
 
 void PlotDecorator::mouseMoveSignal(QMouseEvent *event)

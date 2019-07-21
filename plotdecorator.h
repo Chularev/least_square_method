@@ -12,12 +12,11 @@ class PlotDecorator : public QObject
 public:
     explicit PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *parent = nullptr);
 
-    void intLegend();
-
 signals:
 
 public slots:
     void drawPortion(const QList<Graph> &graphs);
+    void initPlot(const QList<Graph> &graphs);
 
 private slots:
     void onXRangeChanged(const QCPRange &range);
@@ -33,7 +32,7 @@ private:
 
     void updateRange(const QList<Graph> &graphs);
     void init(const Graph &graph);
-
+    void intLegend();
 
     bool wasInitiated;
     QCustomPlot *plot;
