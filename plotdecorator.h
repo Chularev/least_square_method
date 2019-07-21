@@ -13,6 +13,7 @@ public:
     explicit PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *parent = nullptr);
 
 signals:
+    void selectionChangedByUser();
 
 public slots:
     void drawPortion(const QList<Graph> &graphs);

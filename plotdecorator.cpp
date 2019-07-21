@@ -185,4 +185,5 @@ void PlotDecorator::selectionChanged()
             graph->setSelection(QCPDataSelection(graph->data()->dataRange()));
         }
     }
+    emit selectionChangedByUser();
 }
