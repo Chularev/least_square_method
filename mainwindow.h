@@ -31,14 +31,19 @@ private:
     QMenu *fileMenu;
     QAction *openAct;
     QAction *saveAct;
+    QAction *approximationAct;
 
     QThread workerThread;
 
     PlotDecorator *plotDecorator;
 
+    Status currentStatus;
+
 private slots:
     void openCSV();
     void saveCSV();
+    void approximation();
+    void selectionChanged();
     void statusChanged(Status status, QString message);
 
 signals:

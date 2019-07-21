@@ -3,8 +3,10 @@
 
 enum class Status
 {
+    START_PROGRAM,
     START_LOAD_DATA,
     FINISH_LOAD_DATA,
-    OPEN_FILE_ERROR
+    OPEN_FILE_ERROR,
+    ERROR_APPROXIMATION_OPTIONS
 };
 #endif // STATUS_H

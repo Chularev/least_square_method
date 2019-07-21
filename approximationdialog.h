@@ -15,6 +15,10 @@ public:
     explicit ApproximationDialog(QWidget *parent = nullptr);
     ~ApproximationDialog();
 
+    bool isValid() const;
+    int getShift() const;
+    int getSize() const;
+
 private:
     Ui::ApproximationDialog *ui;
 };

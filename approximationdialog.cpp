@@ -18,3 +18,18 @@ ApproximationDialog::~ApproximationDialog()
 {
     delete ui;
 }
+
+bool ApproximationDialog::isValid() const
+{
+    return getShift() <= getSize();
+}
+
+int ApproximationDialog::getShift() const
+{
+    return ui->shiftEdit->text().toInt();
+}
+
+int ApproximationDialog::getSize() const
+{
+    return ui->sizeEdit->text().toInt();
+}

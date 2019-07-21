@@ -1,14 +1,22 @@
 #include "csvloader.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "approximationdialog.h"
 
 #include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    currentStatus(Status::START_PROGRAM)
 {
     ui->setupUi(this);
+
+    QFont legendFont = font();
+    legendFont.setPointSize(9);
+
+    plotDecorator = new PlotDecorator(ui->plot, legendFont, this);
+
 
     createActions();
     createMenus();
@@ -39,6 +47,11 @@ void MainWindow::createActions()
     connect(saveAct, &QAction::triggered, this, &MainWindow::saveCSV);
 
     saveAct->setEnabled(false);
+
+    approximationAct = new QAction(tr("&Аппроксимация"), this);
+    connect(approximationAct, &QAction::triggered, this, &MainWindow::approximation);
+    connect(plotDecorator, &PlotDecorator::selectionChangedByUser, this, &MainWindow::selectionChanged);
+    approximationAct->setEnabled(false);
 }
 
 void MainWindow::createMenus()
@@ -46,6 +59,34 @@ void MainWindow::createMenus()
     fileMenu = menuBar()->addMenu(tr("&Файл"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
+    menuBar()->addAction(approximationAct);
+}
+
+void MainWindow::approximation()
+{
+    ApproximationDialog dialog(this);
+    if (!dialog.exec())
+        return;
+
+    if (dialog.isValid())
+    {
+
+    }
+    else
+    {
+       statusChanged(Status::ERROR_APPROXIMATION_OPTIONS,"");
+    }
+}
+
+void MainWindow::selectionChanged()
+{
+  if (currentStatus != Status::FINISH_LOAD_DATA)
+  {
+      approximationAct->setEnabled(false);
+      return;
+  }
+  bool test = ui->plot->selectedGraphs().count() == 1;
+  approximationAct->setEnabled(test);
 }
 
 void MainWindow::initWorkerThread()
@@ -56,10 +97,6 @@ void MainWindow::initWorkerThread()
     connect(this, &MainWindow::loadCSV, csvLoader, &CSVLoader::loadData);
     connect(csvLoader,&CSVLoader::statusChanged,this, &MainWindow::statusChanged, Qt::BlockingQueuedConnection);
 
-    QFont legendFont = font();
-    legendFont.setPointSize(9);
-
-    plotDecorator = new PlotDecorator(ui->plot, legendFont, this);
 
     connect(csvLoader,&CSVLoader::initPlot, plotDecorator,&PlotDecorator::initPlot, Qt::BlockingQueuedConnection);
     connect(csvLoader,&CSVLoader::portionLoaded,plotDecorator,&PlotDecorator::drawPortion, Qt::BlockingQueuedConnection);
@@ -83,6 +120,7 @@ void MainWindow::saveCSV()
 
 void MainWindow::statusChanged(Status status, QString message)
 {
+    currentStatus = status;
     switch (status)
     {
     case Status::START_LOAD_DATA:
@@ -95,6 +133,13 @@ void MainWindow::statusChanged(Status status, QString message)
         QMessageBox::warning(this, tr("Ошибка при открытие документа"),
                              tr("При открытие документа произошла ошибка.\n")
                              + message, QMessageBox::Ok);
+        break;
+    case Status::ERROR_APPROXIMATION_OPTIONS:
+        QMessageBox::warning(this, tr("Ошибка при введении размеров скользящего окна"),
+                             tr("Количество отсчетов должно быть больше или равно сдвигу.\n")
+                             + message, QMessageBox::Ok);
+        break;
+    case Status::START_PROGRAM:
         break;
     }
 
