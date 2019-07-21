@@ -10,10 +10,10 @@ PlotDecorator::PlotDecorator(QCustomPlot *plot,QObject *parent)
             this,&PlotDecorator::onYRangeChanged);
 
 
-    connect(plot, SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(mouseMoveSignal(QMouseEvent*)));
-    connect(plot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePressSignal(QMouseEvent*)));
-    connect(plot, SIGNAL(mouseRelease(QMouseEvent*)), this, SLOT(mouseReleaseSignal(QMouseEvent*)));
-    connect(plot, SIGNAL(beforeReplot()), this, SLOT(beforeReplot()));
+    connect(plot, &QCustomPlot::mouseMove, this, &PlotDecorator::mouseMoveSignal);
+    connect(plot, &QCustomPlot::mousePress, this, &PlotDecorator::mousePressSignal);
+    connect(plot, &QCustomPlot::mouseRelease, this, &PlotDecorator::mouseReleaseSignal);
+    connect(plot, &QCustomPlot::beforeReplot, this, &PlotDecorator::beforeReplot);
 
 }
 
