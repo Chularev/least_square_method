@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "approximationdialog.h"
+#include "leastsquaremethod.h"
 
 #include <QStandardPaths>
 
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
 
     initWorkerThread();
+    initLeastSquareMethodThread();
 
     setWindowTitle(tr("Линейная апроксимация методом наименьших квадратов"));
 }
@@ -50,8 +52,16 @@ void MainWindow::createActions()
 
     approximationAct = new QAction(tr("&Аппроксимация"), this);
     connect(approximationAct, &QAction::triggered, this, &MainWindow::approximation);
-    connect(plotDecorator, &PlotDecorator::selectionChangedByUser, this, &MainWindow::selectionChanged);
     approximationAct->setEnabled(false);
+
+    hideSelectedGraphs= new QAction(tr("&Скрыть выбранные графики"), this);
+    connect(hideSelectedGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::hideSelectedGraphs);
+    hideSelectedGraphs->setEnabled(false);
+
+
+    //showAllGraphs;
+
+    connect(plotDecorator, &PlotDecorator::selectionChangedByUser, this, &MainWindow::selectionChanged);
 }
 
 void MainWindow::createMenus()
@@ -60,6 +70,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     menuBar()->addAction(approximationAct);
+    menuBar()->addAction(hideSelectedGraphs);
 }
 
 void MainWindow::approximation()
@@ -69,13 +80,12 @@ void MainWindow::approximation()
         return;
 
     if (dialog.isValid())
-    {
-
-    }
+        emit leastSquareMethod(dialog.getSize(),
+                               dialog.getShift(),
+                               ui->plot->selectedGraphs().at(0));
     else
-    {
        statusChanged(Status::ERROR_APPROXIMATION_OPTIONS,"");
-    }
+
 }
 
 void MainWindow::selectionChanged()
@@ -85,8 +95,9 @@ void MainWindow::selectionChanged()
       approximationAct->setEnabled(false);
       return;
   }
-  bool test = ui->plot->selectedGraphs().count() == 1;
-  approximationAct->setEnabled(test);
+  int count = ui->plot->selectedGraphs().count();
+  approximationAct->setEnabled(count == 1);
+  hideSelectedGraphs->setEnabled(count > 0);
 }
 
 void MainWindow::initWorkerThread()
@@ -102,6 +113,18 @@ void MainWindow::initWorkerThread()
     connect(csvLoader,&CSVLoader::portionLoaded,plotDecorator,&PlotDecorator::drawPortion, Qt::BlockingQueuedConnection);
 
     workerThread.start();
+}
+
+void MainWindow::initLeastSquareMethodThread()
+{
+    LeastSquareMethod *werker = new LeastSquareMethod;
+    werker->moveToThread(&leastSquareMethodThread);
+    connect(&leastSquareMethodThread, &QThread::finished, werker, &QObject::deleteLater);
+    connect(this, &MainWindow::leastSquareMethod, werker, &LeastSquareMethod::doWork);
+    connect(werker, &LeastSquareMethod::statusChanged, this, &MainWindow::statusChanged, Qt::BlockingQueuedConnection);
+
+
+    leastSquareMethodThread.start();
 }
 
 void MainWindow::openCSV()

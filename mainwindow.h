@@ -25,6 +25,7 @@ private:
     void createMenus();
 
     void initWorkerThread();
+    void initLeastSquareMethodThread();
 
     Ui::MainWindow *ui;
 
@@ -32,8 +33,11 @@ private:
     QAction *openAct;
     QAction *saveAct;
     QAction *approximationAct;
+    QAction *hideSelectedGraphs;
+    QAction *showAllGraphs;
 
     QThread workerThread;
+    QThread leastSquareMethodThread;
 
     PlotDecorator *plotDecorator;
 
@@ -48,6 +52,7 @@ private slots:
 
 signals:
     void loadCSV(const QString &filePath, const QChar &separator);
+    void leastSquareMethod(int windowSize, int shift, QCPGraph *graph);
 };
 
 #endif // MAINWINDOW_H
