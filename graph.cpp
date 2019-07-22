@@ -5,8 +5,7 @@ QList<QColor> Graph::colors;
 Graph::Graph(const QString &name)
     : name(name)
 {
-    color = generateColor();
-    Graph::colors.append(color);
+    color = generateColor(); 
 }
 
 Graph::~Graph()
@@ -28,6 +27,7 @@ QColor Graph::generateColor()
     {
         color = QColor(qrand() % 255, qrand() % 255, qrand() % 255);
     } while (Graph::colors.contains(color));
+    Graph::colors.append(color);
     return color;
 }
 
