@@ -28,6 +28,7 @@ SOURCES += \
         approximationdialog.cpp \
         csvloader.cpp \
         graph.cpp \
+        leastsquaremethod.cpp \
         main.cpp \
         mainwindow.cpp \
         plotdecorator.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
         approximationdialog.h \
         csvloader.h \
         graph.h \
+        leastsquaremethod.h \
         mainwindow.h \
         plotdecorator.h \
         qcustomplot.h \
