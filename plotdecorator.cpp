@@ -67,6 +67,36 @@ void PlotDecorator::initPlot(const QList<Graph> &graphs)
     plot->replot();
 }
 
+void PlotDecorator::hideSelectedGraphs()
+{
+    for (int i=0; i < plot->graphCount(); ++i)
+    {
+        QCPGraph *graph = plot->graph(i);
+        QCPPlottableLegendItem *item = plot->legend->itemWithPlottable(graph);
+        if ( graph->selected())
+        {
+            item->setVisible(false);
+            graph->setVisible(false);
+        }
+    }
+
+    plot->replot();
+}
+
+void PlotDecorator::showAllGraphs()
+{
+    for (int i=0; i < plot->graphCount(); ++i)
+    {
+        QCPGraph *graph = plot->graph(i);
+        QCPPlottableLegendItem *item = plot->legend->itemWithPlottable(graph);
+
+        item->setVisible(true);
+        graph->setVisible(true);
+    }
+
+    plot->replot();
+}
+
 void PlotDecorator::intLegend()
 {
     plot->legend->setFont(legendFont);

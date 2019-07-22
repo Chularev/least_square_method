@@ -18,6 +18,8 @@ signals:
 public slots:
     void drawPortion(const QList<Graph> &graphs);
     void initPlot(const QList<Graph> &graphs);
+    void hideSelectedGraphs();
+    void showAllGraphs();
 
 private slots:
     void onXRangeChanged(const QCPRange &range);
