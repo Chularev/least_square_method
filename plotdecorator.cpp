@@ -59,7 +59,8 @@ void PlotDecorator::initPlot(const QList<Graph> &graphs)
     }
     plot->xAxis->setRange(0,1);
     plot->yAxis->setRange(0,1);
-    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectLegend);
+    plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom |
+                          QCP::iSelectPlottables | QCP::iSelectLegend | QCP::iMultiSelect);
 
     intLegend();
 
