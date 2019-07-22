@@ -54,12 +54,17 @@ void MainWindow::createActions()
     connect(approximationAct, &QAction::triggered, this, &MainWindow::approximation);
     approximationAct->setEnabled(false);
 
-    hideSelectedGraphs= new QAction(tr("&Скрыть выбранные графики"), this);
+    hideSelectedGraphs = new QAction(tr("&Скрыть выбранные графики"), this);
     connect(hideSelectedGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::hideSelectedGraphs);
+    connect(hideSelectedGraphs, &QAction::triggered,this,[=](){ hideSelectedGraphs->setEnabled(false); });
     hideSelectedGraphs->setEnabled(false);
 
+    showAllGraphs = new QAction(tr("&Показать все графики"), this);
+    connect(showAllGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::showAllGraphs);
+    connect(hideSelectedGraphs, &QAction::triggered,this,[=](){ showAllGraphs->setEnabled(true); });
+    connect(showAllGraphs, &QAction::triggered,this,[=](){ showAllGraphs->setEnabled(false); });
+    showAllGraphs->setEnabled(false);
 
-    //showAllGraphs;
 
     connect(plotDecorator, &PlotDecorator::selectionChangedByUser, this, &MainWindow::selectionChanged);
 }
@@ -71,6 +76,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAct);
     menuBar()->addAction(approximationAct);
     menuBar()->addAction(hideSelectedGraphs);
+    menuBar()->addAction(showAllGraphs);
 }
 
 void MainWindow::approximation()
