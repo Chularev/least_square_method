@@ -17,6 +17,7 @@ signals:
 
 public slots:
     void drawPortion(const QList<Graph> &graphs);
+    void addGraph(const Graph &graph, QCPGraph::LineStyle lineStyle);
     void initPlot(const QList<Graph> &graphs);
     void hideSelectedGraphs();
     void showAllGraphs();

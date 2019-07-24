@@ -49,14 +49,8 @@ void PlotDecorator::initPlot(const QList<Graph> &graphs)
 {
     plot->clearGraphs();
     for (int i = 0; i < graphs.count(); i++)
-    {
-        const Graph graph = graphs.at(i);
-        plot->addGraph();
-        plot->graph(i)->setPen(graph.getColor());
-        plot->graph(i)->setLineStyle(QCPGraph::lsNone);
-        plot->graph(i)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-        plot->graph(i)->setName(graph.getName());
-    }
+        addGraph(graphs.at(i), QCPGraph::lsNone);
+
     plot->xAxis->setRange(0,1);
     plot->yAxis->setRange(0,1);
     plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom |
@@ -121,6 +115,15 @@ void PlotDecorator::drawPortion(const QList<Graph> &graphs)
     updateRange(graphs);
     plot->replot();
     qApp->processEvents();
+}
+
+void PlotDecorator::addGraph(const Graph &graph, QCPGraph::LineStyle lineStyle)
+{
+    QCPGraph *newGraph = plot->addGraph();
+    newGraph->setPen(graph.getColor());
+    newGraph->setLineStyle(lineStyle);
+    newGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+    newGraph->setName(graph.getName());
 }
 
 int PlotDecorator::getGraphIndex(const QString &name) const
