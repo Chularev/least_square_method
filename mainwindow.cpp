@@ -74,7 +74,7 @@ void MainWindow::createMenus()
     fileMenu = menuBar()->addMenu(tr("&Файл"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
- //   menuBar()->addAction(approximationAct);
+    menuBar()->addAction(approximationAct);
     menuBar()->addAction(hideSelectedGraphs);
     menuBar()->addAction(showAllGraphs);
 }

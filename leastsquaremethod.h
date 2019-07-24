@@ -16,8 +16,10 @@ signals:
     void statusChanged(Status status, QString message = "") const;
 
 public slots:
-    void doWork(int windowSize, int shift, QCPGraph *graph);
+    void doWork(int windowSize, int step, QCPGraph *graph);
 private:
+
+    void kramer(const QMap<QString,double> &summ);
     QCPGraph *graph;
 };
 
