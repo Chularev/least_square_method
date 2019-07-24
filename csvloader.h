@@ -22,13 +22,13 @@ signals:
     void portionLoaded(const QList<Graph> &graphs) const;
 
 private:
-    void parseHeader(const QStringList &header);
+    void parseHeader();
     bool init(const QChar &separator);
     void loadPortion(const QChar &separator);
     void doPortionEmit(const QVector<QList<double>> &xVector, const QVector<QList<double>> &yVector) const;
     bool strToDouble(const QString &str, double *result) const;
 
-    int headerSize;
+    QStringList header;
     QTextStream input;
 };
 

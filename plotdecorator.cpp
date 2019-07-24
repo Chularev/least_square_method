@@ -114,11 +114,23 @@ void PlotDecorator::drawPortion(const QList<Graph> &graphs)
     for (int i = 0; i < graphs.count(); i++)
     {
         const Graph graph = graphs.at(i);
-        plot->graph(i)->addData(graph.getX(),graph.getY());
+        int index = getGraphIndex(graph.getName());
+        if (index != -1)
+            plot->graph(index)->addData(graph.getX(),graph.getY());
     }
     updateRange(graphs);
     plot->replot();
     qApp->processEvents();
+}
+
+int PlotDecorator::getGraphIndex(const QString &name) const
+{
+    for (int i = 0; i < plot->graphCount(); i++)
+    {
+        if (plot->graph(i)->name() == name)
+            return i;
+    }
+    return -1;
 }
 
 void PlotDecorator::updateRange(const QList<Graph> &graphs)

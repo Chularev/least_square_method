@@ -7,7 +7,6 @@
 static const int PORTION_SIZE = 50000;
 
 CSVLoader::CSVLoader()
-    : headerSize(0)
 {
 
 }
@@ -47,14 +46,13 @@ bool CSVLoader::init(const QChar &separator)
         return false;
 
     QString line = input.readLine();
-    QStringList header = line.split(separator);
-    headerSize = header.size();
-    parseHeader(header);
+    header = line.split(separator);
+    parseHeader();
 
     return  true;
 }
 
-void CSVLoader::parseHeader(const QStringList &header)
+void CSVLoader::parseHeader()
 {
     QList<Graph> graphs;
 
@@ -66,8 +64,8 @@ void CSVLoader::parseHeader(const QStringList &header)
 
 void CSVLoader::loadPortion(const QChar &separator)
 {
-    QVector<QList<double>> yVector(headerSize - 1);
-    QVector<QList<double>> xVector(headerSize - 1);
+    QVector<QList<double>> yVector(header.size() - 1);
+    QVector<QList<double>> xVector(header.size() - 1);
 
     for (int i = 0; i < PORTION_SIZE; i++)
     {
@@ -108,7 +106,7 @@ void CSVLoader::doPortionEmit(const QVector<QList<double>> &xVector,const QVecto
     for (int i = 0; i < xVector.size(); i++) {
         if (xVector[i].size() == 0)
             continue;
-        Graph graph("");
+        Graph graph(header.at(i + 1));
         graph.setX(xVector[i].toVector());
         graph.setY(yVector[i].toVector());
         graphs.append(graph);

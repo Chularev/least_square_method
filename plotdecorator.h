@@ -44,6 +44,8 @@ private:
     bool draggingLegend;
     QPointF dragLegendOrigin;
 
+    int getGraphIndex(const QString &name) const;
+
     double minX;
     double maxX;
 
