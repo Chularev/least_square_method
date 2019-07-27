@@ -16,7 +16,12 @@ void LeastSquareMethod::doWork(int windowSize, int shift, QCPGraph *graph)
 
     graph->data()->sort();
     for (int i = 0; i < graph->data()->size(); i += shift)
+    {
+        if (i  + windowSize >= graph->data()->size())
+            windowSize = shift + 1;
+
         calculateWindow(i, windowSize, graph);
+    }
 
     if (xResult.size() > 0 && xResult.size() < PORTION_SIZE)
         doEmit();
@@ -51,11 +56,8 @@ void LeastSquareMethod::calculateWindow(int start, int windowSize, QCPGraph *gra
 
     if (i > 0)
     {
-//        double x1 = graph->data()->at(start)->key;
-//        int lastIndex = graph->data()->size() > start + windowSize ?
-//                    start + windowSize : graph->data()->size() - 1;
-
-        double x2 = graph->data()->at(start + i / 2)->key;
+        int index = start + i / 2;
+        double x2 = graph->data()->at(index)->key;
 
         kramer(summ, x2);
     }
