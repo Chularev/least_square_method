@@ -1,6 +1,7 @@
 #ifndef LEASTSQUAREMETHOD_H
 #define LEASTSQUAREMETHOD_H
 
+#include "graph.h"
 #include "qcustomplot.h"
 #include "status.h"
 
@@ -14,13 +15,19 @@ public:
 
 signals:
     void statusChanged(Status status, QString message = "") const;
+    void createGraph(const Graph &graph, QCPGraph::LineStyle lineStyle);
+    void portionApproximated(const QList<Graph> &graphs) const;
+
 
 public slots:
-    void doWork(int windowSize, int step, QCPGraph *graph);
+    void doWork(int windowSize, int step, QCPGraph *graphResult);
 private:
 
-    void kramer(const QMap<QString,double> &summ);
-    QCPGraph *graph;
+    void kramer(const QMap<QString,double> &summ, double xMid);
+    void doEmit();
+    Graph graphResult;
+    QList<double> xResult;
+    QList<double> yResult;
 };
 
 #endif // LEASTSQUAREMETHOD_H
