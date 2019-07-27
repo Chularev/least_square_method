@@ -28,6 +28,8 @@ public:
     double getMaxX() const;
     double getMaxY() const;
 
+    void setName(const QString &value);
+
 private:
     QColor generateColor();
 
