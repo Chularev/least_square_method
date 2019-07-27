@@ -49,7 +49,7 @@ void PlotDecorator::initPlot(const QList<Graph> &graphs)
 {
     plot->clearGraphs();
     for (int i = 0; i < graphs.count(); i++)
-        addGraph(graphs.at(i), QCPGraph::lsNone);
+        addGraph(graphs.at(i), QCPGraph::lsLine);
 
     plot->xAxis->setRange(0,1);
     plot->yAxis->setRange(0,1);
