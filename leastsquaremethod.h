@@ -20,9 +20,10 @@ signals:
 
 
 public slots:
-    void doWork(int windowSize, int step, QCPGraph *graphResult);
+    void doWork(int windowSize, int shift, QCPGraph *graphResult);
 private:
 
+    void calculateWindow(int shift, int windowSize, QCPGraph *graph);
     void kramer(const QMap<QString,double> &summ, double xMid);
     void doEmit();
     Graph graphResult;

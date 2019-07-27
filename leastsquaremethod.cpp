@@ -7,47 +7,61 @@ LeastSquareMethod::LeastSquareMethod(QObject *parent) : QObject(parent),
 
 }
 
-void LeastSquareMethod::doWork(int windowSize, int step, QCPGraph *graph)
+void LeastSquareMethod::doWork(int windowSize, int shift, QCPGraph *graph)
 {
     graphResult = Graph(graph->name() +"_result");
     emit statusChanged(Status::APPROXIMATION_START);
     emit createGraph(graphResult, QCPGraph::lsLine);
 
-    QMap<QString,double> summ;
 
     graph->data()->sort();
-    for (int i = 0, shift = 0; i < graph->data()->size(); i++)
-    {
-        double x = graph->data()->at(i)->key;
-        double y = graph->data()->at(i)->value;
-        summ["x"] = summ.contains("x") ? summ["x"] + x : x;
-        summ["y"] = summ.contains("y") ? summ["y"] + y : y;
-
-        summ["x^2"] = summ.contains("x^2") ? summ["x^2"] + x*x : x*x;
-        summ["xy"] = summ.contains("xy") ? summ["xy"] + x*y : x*y;
-        if (i % windowSize == 0 && i > 0)
-        {
-            shift += step;
-            i = shift;
-            summ["n"] = windowSize;
-            double x1 = graph->data()->at(i - windowSize/2)->key;
-            kramer(summ, x1);
-            summ.clear();
-        }
-        if (i == graph->data()->size() && !(i % windowSize == 0 && i > 0))
-        {
-            summ["n"] = windowSize;
-            double x1 = graph->data()->at(i - windowSize/2)->key;
-            kramer(summ, x1);
-            summ.clear();
-        }
-    }
+    for (int i = 0; i < graph->data()->size(); i += shift)
+        calculateWindow(i, windowSize, graph);
 
     if (xResult.size() > 0 && xResult.size() < PORTION_SIZE)
         doEmit();
 
     emit statusChanged(Status::APPROXIMATION_FINISH);
 }
+
+void LeastSquareMethod::calculateWindow(int start, int windowSize, QCPGraph *graph)
+{
+    QMap<QString,double> summ;
+    summ["n"]   = windowSize;
+    summ["x"]   = 0;
+    summ["y"]   = 0;
+    summ["X^2"] = 0;
+    summ["xy"]  = 0;
+
+    int i = 0;
+    for (; i < windowSize; i++)
+    {
+        int index = start + i;
+        if (index >= graph->data()->size())
+            break;
+
+        double x = graph->data()->at(index)->key;
+        double y = graph->data()->at(index)->value;
+        summ["x"] += x;
+        summ["y"] += y;
+
+        summ["x^2"] += x*x;
+        summ["xy"] +=  x*y;
+    }
+
+    if (i > 0)
+    {
+//        double x1 = graph->data()->at(start)->key;
+//        int lastIndex = graph->data()->size() > start + windowSize ?
+//                    start + windowSize : graph->data()->size() - 1;
+
+        double x2 = graph->data()->at(start + i / 2)->key;
+
+        kramer(summ, x2);
+    }
+
+}
+
 static double determinant(double matrix[4])
 {
     return matrix[0] * matrix[3] - matrix[1] * matrix[2];
@@ -55,27 +69,37 @@ static double determinant(double matrix[4])
 
 void LeastSquareMethod::kramer(const QMap<QString, double> &summ, double xMid)
 {
+    /*
     double matrixD[4] = {summ["x^2"], summ["x"],
                         summ["x"], summ["n"]};
     double D = determinant(matrixD);
     if (D == 0.0)
         return;
 
-    double matrixA[4]= {summ["xy"], summ["y"],
-                       summ["x"], summ["n"]};
+    double matrixA[4]= {summ["xy"], summ["x"],
+                       summ["y"], summ["n"]};
     double DA =  determinant(matrixA);
 
-    double matrixB[4] = {summ["x^2"], summ["x"],
-                        summ["xy"], summ["y"]};
+    double matrixB[4] = {summ["x^2"], summ["xy"],
+                        summ["x"], summ["y"]};
     double DB =  determinant(matrixB);
 
     double A = DA / D;
     double B = DB / D;
 
+
     double y = A * xMid + B;
+    */
+    double tmp = (summ["n"]*summ["x^2"] - summ["x"]*summ["x"]);
+ //   qDebug() << "D = " << tmp;
+    if (tmp == 0.0)
+        return;
+
+    double A = (summ["n"] * summ["xy"] - (summ["x"]*summ["y"])) / tmp;
+    double B = (summ["y"] - A * summ["x"]) / summ["n"];
 
     xResult.append(xMid);
-    yResult.append(y);
+    yResult.append(A * xMid + B);
     if (xResult.size() == PORTION_SIZE)
         doEmit();
 }
