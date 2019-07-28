@@ -100,12 +100,8 @@ void LeastSquareMethod::kramer(const QMap<QString, double> &summ, double xMid)
                        summ["y"], summ["n"]};
     double DA =  determinant(matrixA);
 
-    double matrixB[4] = {summ["x^2"], summ["xy"],
-                        summ["x"], summ["y"]};
-    double DB =  determinant(matrixB);
-
     double A = DA / D;
-    double B = DB / D;
+    double B = (summ["y"] - A*summ["x"]) / summ["n"];
 
 
     double y = A * xMid + B;
