@@ -63,11 +63,21 @@ void PlotDecorator::initPlot(const QList<Graph> &graphs)
 
 void PlotDecorator::hideSelectedGraphs()
 {
+    hideGraphs(true);
+}
+
+void PlotDecorator::hideUnselectedGraphs()
+{
+    hideGraphs(false);
+}
+
+void PlotDecorator::hideGraphs(bool isSelected)
+{
     for (int i=0; i < plot->graphCount(); ++i)
     {
         QCPGraph *graph = plot->graph(i);
         QCPPlottableLegendItem *item = plot->legend->itemWithPlottable(graph);
-        if ( graph->selected())
+        if (graph->selected() == isSelected)
         {
             item->setVisible(false);
             graph->setVisible(false);

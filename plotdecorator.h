@@ -21,6 +21,7 @@ public slots:
     void addGraph(const Graph &graph, QCPGraph::LineStyle lineStyle);
     void initPlot(const QList<Graph> &graphs);
     void hideSelectedGraphs();
+    void hideUnselectedGraphs();
     void showAllGraphs();
 
 private slots:
@@ -32,6 +33,7 @@ private slots:
     void mouseReleaseSignal(QMouseEvent *event);
     void beforeReplot();
     void selectionChanged();
+    void hideGraphs(bool isSelected);
 
 private:
 
