@@ -15,18 +15,31 @@ void LeastSquareMethod::doWork(int windowSize, int shift, QCPGraph *graph)
 
 
     graph->data()->sort();
-    for (int i = 0; i < graph->data()->size(); i += shift)
+    for (int i = 0; i < graph->data()->size() && shift > 0; i += shift)
     {
-        if (i  + windowSize >= graph->data()->size())
-            windowSize = shift + 1;
+        while (i  + windowSize > graph->data()->size() - 1)
+        {
+            windowSize = windowSize / 2;
+            if (windowSize < shift)
+                shift = windowSize - 1;
+        }
 
         calculateWindow(i, windowSize, graph);
     }
 
-    if (xResult.size() > 0 && xResult.size() < PORTION_SIZE)
-        doEmit();
+    // Because the last portion not approximated
+    int index = graph->data()->size() - 1;
+    xResult.append(graph->data()->at(index)->key);
+    yResult.append(graph->data()->at(index)->value);
+    doEmit();
 
     emit statusChanged(Status::APPROXIMATION_FINISH);
+}
+
+void LeastSquareMethod::resultGraphChangedName(const QString &oldName, const QString &newName)
+{
+    Q_UNUSED(oldName);
+    graphResult.setName(newName);
 }
 
 void LeastSquareMethod::calculateWindow(int start, int windowSize, QCPGraph *graph)

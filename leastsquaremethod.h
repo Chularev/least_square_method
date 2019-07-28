@@ -21,6 +21,7 @@ signals:
 
 public slots:
     void doWork(int windowSize, int shift, QCPGraph *graphResult);
+    void resultGraphChangedName(const QString &oldName, const QString &newName);
 private:
 
     void calculateWindow(int shift, int windowSize, QCPGraph *graph);
