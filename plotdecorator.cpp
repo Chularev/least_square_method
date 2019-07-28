@@ -111,6 +111,9 @@ void PlotDecorator::drawPortion(const QList<Graph> &graphs)
         int index = getGraphIndex(graph.getName());
         if (index != -1)
             plot->graph(index)->addData(graph.getX(),graph.getY());
+        else
+            qDebug() << "graph with name {" << graph.getName() << "} "
+                     << " not found";
     }
     updateRange(graphs);
     plot->replot();
@@ -119,11 +122,18 @@ void PlotDecorator::drawPortion(const QList<Graph> &graphs)
 
 void PlotDecorator::addGraph(const Graph &graph, QCPGraph::LineStyle lineStyle)
 {
+    Graph tmp(graph);
+    while (getGraphIndex(tmp.getName()) != -1)
+        tmp.setName(tmp.getName() + "'");
+
+    if (graph.getName() != tmp.getName())
+        emit addedGraphChangedName(graph.getName(), tmp.getName());
+
     QCPGraph *newGraph = plot->addGraph();
     newGraph->setPen(graph.getColor());
     newGraph->setLineStyle(lineStyle);
     newGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
-    newGraph->setName(graph.getName());
+    newGraph->setName(tmp.getName());
 }
 
 int PlotDecorator::getGraphIndex(const QString &name) const

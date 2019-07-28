@@ -14,6 +14,7 @@ public:
 
 signals:
     void selectionChangedByUser();
+    void addedGraphChangedName(const QString &oldName, const QString &newName);
 
 public slots:
     void drawPortion(const QList<Graph> &graphs);
