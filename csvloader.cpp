@@ -40,6 +40,22 @@ void CSVLoader::loadData(const QString &path, const QChar &separator)
     emit statusChanged(Status::FINISH_LOAD_DATA);
 }
 
+void CSVLoader::graphChangedName(const QString &oldName, const QString &newName)
+{
+    int findNameCount = 0;
+    for (int i = 0; i < header.size(); i++)
+    {
+        if (header.at(i) == oldName)
+            findNameCount++;
+
+        if (findNameCount == 2)
+        {
+            header[i] = newName;
+            break;
+        }
+    }
+}
+
 bool CSVLoader::init(const QChar &separator)
 {
     if (input.atEnd())

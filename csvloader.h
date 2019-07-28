@@ -15,7 +15,7 @@ public:
 
 public slots:
     void loadData(const QString &path, const QChar &separator);
-
+    void graphChangedName(const QString &oldName, const QString &newName);
 signals:
     void statusChanged(Status status, QString message = "") const;
     void initPlot(const QList<Graph> &graphs) const;

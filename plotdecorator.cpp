@@ -123,8 +123,14 @@ void PlotDecorator::drawPortion(const QList<Graph> &graphs)
 void PlotDecorator::addGraph(const Graph &graph, QCPGraph::LineStyle lineStyle)
 {
     Graph tmp(graph);
+
+    int count = 1;
     while (getGraphIndex(tmp.getName()) != -1)
-        tmp.setName(tmp.getName() + "'");
+    {
+        QString name = QString(graph.getName() + " (%1)")
+                        .arg(count++);
+        tmp.setName(name);
+    }
 
     if (graph.getName() != tmp.getName())
         emit addedGraphChangedName(graph.getName(), tmp.getName());
