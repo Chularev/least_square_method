@@ -9,7 +9,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    currentStatus(Status::START_PROGRAM)
+    currentStatus(Status::START_PROGRAM),
+    process(false)
 {
     ui->setupUi(this);
 
@@ -54,19 +55,29 @@ void MainWindow::createActions()
     connect(approximationAct, &QAction::triggered, this, &MainWindow::approximation);
     approximationAct->setEnabled(false);
 
-    hideSelectedGraphs = new QAction(tr("&Скрыть выбранные графики"), this);
+    hideSelectedGraphs = new QAction(tr("&Скрыть выбранные кривые"), this);
     connect(hideSelectedGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::hideSelectedGraphs);
     connect(hideSelectedGraphs, &QAction::triggered,this,[=](){ hideSelectedGraphs->setEnabled(false); });
     hideSelectedGraphs->setEnabled(false);
 
-    showAllGraphs = new QAction(tr("&Показать все графики"), this);
+
+    hideUnselectedGraphs = new QAction(tr("&Скрыть невыбранные кривые"), this);
+    connect(hideUnselectedGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::hideUnselectedGraphs);
+    connect(hideUnselectedGraphs, &QAction::triggered,this,[=](){ hideUnselectedGraphs->setEnabled(false); });
+    hideUnselectedGraphs->setEnabled(false);
+
+    showAllGraphs = new QAction(tr("&Показать все кривые"), this);
     connect(showAllGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::showAllGraphs);
     connect(hideSelectedGraphs, &QAction::triggered,this,[=](){ showAllGraphs->setEnabled(true); });
     connect(showAllGraphs, &QAction::triggered,this,[=](){ showAllGraphs->setEnabled(false); });
     showAllGraphs->setEnabled(false);
 
+    showAllCounts = new QAction(tr("&Все отсчеты на экран"), this);
+    connect(showAllCounts, &QAction::triggered, this,[=](){ plotDecorator->replot(); });
+    showAllCounts->setEnabled(false);
 
-    connect(plotDecorator, &PlotDecorator::selectionChangedByUser, this, &MainWindow::selectionChanged);
+
+    connect(plotDecorator, &PlotDecorator::selectionChangedByUser, this, &MainWindow::updateActions);
 }
 
 void MainWindow::createMenus()
@@ -74,9 +85,13 @@ void MainWindow::createMenus()
     fileMenu = menuBar()->addMenu(tr("&Файл"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
-    menuBar()->addAction(approximationAct);
-    menuBar()->addAction(hideSelectedGraphs);
-    menuBar()->addAction(showAllGraphs);
+
+    graphsMenu = menuBar()->addMenu(tr("&Кривые"));
+    graphsMenu->addAction(approximationAct);
+    graphsMenu->addAction(hideSelectedGraphs);
+    graphsMenu->addAction(hideUnselectedGraphs);
+    graphsMenu->addAction(showAllGraphs);
+    menuBar()->addAction(showAllCounts);
 }
 
 void MainWindow::approximation()
@@ -94,16 +109,23 @@ void MainWindow::approximation()
 
 }
 
-void MainWindow::selectionChanged()
+void MainWindow::updateActions()
 {
-  if (currentStatus != Status::FINISH_LOAD_DATA)
-  {
-      approximationAct->setEnabled(false);
-      return;
-  }
   int count = ui->plot->selectedGraphs().count();
-  approximationAct->setEnabled(count == 1);
+
+  openAct->setEnabled(!process);
+ // QAction *saveAct;
+  approximationAct->setEnabled(count == 1 && !process);
   hideSelectedGraphs->setEnabled(count > 0);
+
+  int visileGraphs = 0;
+  for (int i=0; i < ui->plot->graphCount(); ++i)
+  {
+      if (ui->plot->graph(i)->visible())
+          visileGraphs++;
+  }
+
+  hideUnselectedGraphs->setEnabled(ui->plot->selectedGraphs().count() < visileGraphs);
 }
 
 void MainWindow::initWorkerThread()
@@ -117,6 +139,7 @@ void MainWindow::initWorkerThread()
 
     connect(csvLoader,&CSVLoader::initPlot, plotDecorator,&PlotDecorator::initPlot, Qt::BlockingQueuedConnection);
     connect(csvLoader,&CSVLoader::portionLoaded,plotDecorator,&PlotDecorator::drawPortion, Qt::BlockingQueuedConnection);
+    connect(plotDecorator, &PlotDecorator::addedGraphChangedName,csvLoader, &CSVLoader::graphChangedName, Qt::DirectConnection);
 
     workerThread.start();
 }
@@ -128,7 +151,9 @@ void MainWindow::initLeastSquareMethodThread()
     connect(&leastSquareMethodThread, &QThread::finished, werker, &QObject::deleteLater);
     connect(this, &MainWindow::leastSquareMethod, werker, &LeastSquareMethod::doWork);
     connect(werker, &LeastSquareMethod::statusChanged, this, &MainWindow::statusChanged, Qt::BlockingQueuedConnection);
-
+    connect(werker, &LeastSquareMethod::createGraph, plotDecorator, &PlotDecorator::addGraph, Qt::BlockingQueuedConnection);
+    connect(werker,&LeastSquareMethod::portionApproximated,plotDecorator,&PlotDecorator::drawPortion, Qt::BlockingQueuedConnection);
+    connect(plotDecorator, &PlotDecorator::addedGraphChangedName,werker, &LeastSquareMethod::resultGraphChangedName, Qt::DirectConnection);
 
     leastSquareMethodThread.start();
 }
@@ -152,6 +177,12 @@ void MainWindow::statusChanged(Status status, QString message)
     currentStatus = status;
     switch (status)
     {
+    case Status::APPROXIMATION_FINISH:
+        ui->myStatusBar->setText(tr("Расчет выполнен"));
+        break;
+    case Status::APPROXIMATION_START:
+        ui->myStatusBar->setText(tr("Выполняется аппроксимация кривой"));
+        break;
     case Status::START_LOAD_DATA:
         ui->myStatusBar->setText(tr("Выполняется загрузка данных"));
         break;
@@ -172,4 +203,11 @@ void MainWindow::statusChanged(Status status, QString message)
         break;
     }
 
+
+    if (currentStatus == Status::START_LOAD_DATA)
+        showAllCounts->setEnabled(true);
+
+    process = currentStatus == Status::APPROXIMATION_START ||
+               currentStatus == Status::START_LOAD_DATA;
+    updateActions();
 }

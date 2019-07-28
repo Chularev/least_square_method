@@ -30,11 +30,15 @@ private:
     Ui::MainWindow *ui;
 
     QMenu *fileMenu;
+    QMenu *graphsMenu;
+
     QAction *openAct;
     QAction *saveAct;
     QAction *approximationAct;
     QAction *hideSelectedGraphs;
+    QAction *hideUnselectedGraphs;
     QAction *showAllGraphs;
+    QAction *showAllCounts;
 
     QThread workerThread;
     QThread leastSquareMethodThread;
@@ -42,12 +46,13 @@ private:
     PlotDecorator *plotDecorator;
 
     Status currentStatus;
+    bool process;
 
 private slots:
     void openCSV();
     void saveCSV();
     void approximation();
-    void selectionChanged();
+    void updateActions();
     void statusChanged(Status status, QString message);
 
 signals:
