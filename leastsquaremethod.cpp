@@ -17,6 +17,9 @@ void LeastSquareMethod::doWork(int windowSize, int shift, QCPGraph *graph)
     graph->data()->sort();
     for (int i = 0; i < graph->data()->size() && shift > 0; i += shift)
     {
+        /*
+         * Because the last portion not approximated
+         */
         while (i  + windowSize > graph->data()->size() - 1)
         {
             windowSize = windowSize / 2;
@@ -27,7 +30,8 @@ void LeastSquareMethod::doWork(int windowSize, int shift, QCPGraph *graph)
         calculateWindow(i, windowSize, graph);
     }
 
-    // Because the last portion not approximated
+
+    // For beauty
     int index = graph->data()->size() - 1;
     xResult.append(graph->data()->at(index)->key);
     yResult.append(graph->data()->at(index)->value);
@@ -70,9 +74,9 @@ void LeastSquareMethod::calculateWindow(int start, int windowSize, QCPGraph *gra
     if (i > 0)
     {
         int index = start + i / 2;
-        double x2 = graph->data()->at(index)->key;
+        double xMid = graph->data()->at(index)->key;
 
-        kramer(summ, x2);
+        kramer(summ, xMid);
     }
 
 }
@@ -84,12 +88,13 @@ static double determinant(double matrix[4])
 
 void LeastSquareMethod::kramer(const QMap<QString, double> &summ, double xMid)
 {
-    /*
+
     double matrixD[4] = {summ["x^2"], summ["x"],
                         summ["x"], summ["n"]};
     double D = determinant(matrixD);
     if (D == 0.0)
         return;
+
 
     double matrixA[4]= {summ["xy"], summ["x"],
                        summ["y"], summ["n"]};
@@ -104,17 +109,9 @@ void LeastSquareMethod::kramer(const QMap<QString, double> &summ, double xMid)
 
 
     double y = A * xMid + B;
-    */
-    double tmp = (summ["n"]*summ["x^2"] - summ["x"]*summ["x"]);
- //   qDebug() << "D = " << tmp;
-    if (tmp == 0.0)
-        return;
-
-    double A = (summ["n"] * summ["xy"] - (summ["x"]*summ["y"])) / tmp;
-    double B = (summ["y"] - A * summ["x"]) / summ["n"];
 
     xResult.append(xMid);
-    yResult.append(A * xMid + B);
+    yResult.append(y);
     if (xResult.size() == PORTION_SIZE)
         doEmit();
 }
@@ -123,9 +120,12 @@ void LeastSquareMethod::doEmit()
 {
     graphResult.setX(xResult.toVector());
     graphResult.setY(yResult.toVector());
+
     QList<Graph> graphs;
     graphs.append(graphResult);
+
     emit portionApproximated(graphs) ;
+
     xResult.clear();
     yResult.clear();
 }
