@@ -19,6 +19,13 @@ PlotDecorator::PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *paren
 
 }
 
+void PlotDecorator::replot()
+{
+    plot->xAxis->setRange(minX,maxX);
+    plot->yAxis->setRange(minY,maxY);
+    plot->replot();
+}
+
 void PlotDecorator::onXRangeChanged(const QCPRange &range)
 {
     QCPRange boundedRange = range;

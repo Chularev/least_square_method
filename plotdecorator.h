@@ -11,6 +11,7 @@ class PlotDecorator : public QObject
     Q_OBJECT
 public:
     explicit PlotDecorator(QCustomPlot *plot, QFont legendFont, QObject *parent = nullptr);
+    void replot();
 
 signals:
     void selectionChangedByUser();
