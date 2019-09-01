@@ -111,12 +111,12 @@ void MainWindow::approximation()
 
 void MainWindow::updateActions()
 {
-  int count = ui->plot->selectedGraphs().count();
+  int selectedGraphs = ui->plot->selectedGraphs().count();
 
   openAct->setEnabled(!process);
  // QAction *saveAct;
-  approximationAct->setEnabled(count == 1 && !process);
-  hideSelectedGraphs->setEnabled(count > 0);
+  approximationAct->setEnabled(selectedGraphs == 1 && !process);
+  hideSelectedGraphs->setEnabled(selectedGraphs > 0);
 
   int visileGraphs = 0;
   for (int i=0; i < ui->plot->graphCount(); ++i)
@@ -125,7 +125,9 @@ void MainWindow::updateActions()
           visileGraphs++;
   }
 
-  hideUnselectedGraphs->setEnabled(ui->plot->selectedGraphs().count() < visileGraphs);
+  hideUnselectedGraphs->setEnabled(
+              selectedGraphs > 0 &&
+              selectedGraphs < visileGraphs);
 }
 
 void MainWindow::initWorkerThread()
