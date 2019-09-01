@@ -90,8 +90,9 @@ void PlotDecorator::hideGraphs(bool isSelected)
             graph->setVisible(false);
         }
     }
-
     plot->replot();
+
+    emit selectionChangedByUser();
 }
 
 void PlotDecorator::showAllGraphs()
@@ -106,6 +107,8 @@ void PlotDecorator::showAllGraphs()
     }
 
     plot->replot();
+
+    emit selectionChangedByUser();
 }
 
 void PlotDecorator::intLegend()

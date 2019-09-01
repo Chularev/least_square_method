@@ -66,8 +66,6 @@ void MainWindow::createActions()
 
     showAllGraphs = new QAction(tr("&Показать все кривые"), this);
     connect(showAllGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::showAllGraphs);
-    connect(hideSelectedGraphs, &QAction::triggered,this,[=](){ showAllGraphs->setEnabled(true); });
-    connect(showAllGraphs, &QAction::triggered,this,[=](){ showAllGraphs->setEnabled(false); });
     showAllGraphs->setEnabled(false);
 
     showAllCounts = new QAction(tr("&Все отсчеты на экран"), this);
@@ -109,25 +107,30 @@ void MainWindow::approximation()
 
 void MainWindow::updateActions()
 {
-  int selectedGraphs = ui->plot->selectedGraphs().count();
 
   openAct->setEnabled(!process);
  // QAction *saveAct;
-  approximationAct->setEnabled(selectedGraphs == 1 && !process);
-  hideSelectedGraphs->setEnabled(selectedGraphs > 0);
 
   int visileGraphs = 0;
+  int selectedGraphs = 0;
   for (int i=0; i < ui->plot->graphCount(); ++i)
   {
       if (ui->plot->graph(i)->visible())
+      {
           visileGraphs++;
+          if (ui->plot->graph(i)->selected())
+              selectedGraphs++;
+      }
   }
 
-  // It can be changed above.
-  selectedGraphs = ui->plot->selectedGraphs().count();
-  hideUnselectedGraphs->setEnabled(
-              selectedGraphs > 0 &&
+  approximationAct->setEnabled(selectedGraphs == 1 && !process);
+  hideSelectedGraphs->setEnabled(selectedGraphs > 0);
+
+  hideUnselectedGraphs->setEnabled(selectedGraphs > 0 &&
               selectedGraphs < visileGraphs);
+
+  showAllGraphs->setEnabled(ui->plot->graphCount() != visileGraphs);
+
 }
 
 void MainWindow::initWorkerThread()
