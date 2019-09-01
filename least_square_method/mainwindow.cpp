@@ -57,13 +57,11 @@ void MainWindow::createActions()
 
     hideSelectedGraphs = new QAction(tr("&Скрыть выбранные кривые"), this);
     connect(hideSelectedGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::hideSelectedGraphs);
-    connect(hideSelectedGraphs, &QAction::triggered,this,[=](){ hideSelectedGraphs->setEnabled(false); });
     hideSelectedGraphs->setEnabled(false);
 
 
     hideUnselectedGraphs = new QAction(tr("&Скрыть невыбранные кривые"), this);
     connect(hideUnselectedGraphs, &QAction::triggered, plotDecorator, &PlotDecorator::hideUnselectedGraphs);
-    connect(hideUnselectedGraphs, &QAction::triggered,this,[=](){ hideUnselectedGraphs->setEnabled(false); });
     hideUnselectedGraphs->setEnabled(false);
 
     showAllGraphs = new QAction(tr("&Показать все кривые"), this);
@@ -125,6 +123,8 @@ void MainWindow::updateActions()
           visileGraphs++;
   }
 
+  // It can be changed above.
+  selectedGraphs = ui->plot->selectedGraphs().count();
   hideUnselectedGraphs->setEnabled(
               selectedGraphs > 0 &&
               selectedGraphs < visileGraphs);
